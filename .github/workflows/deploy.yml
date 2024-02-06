@@ -1,0 +1,31 @@
+name: Download Images
+
+on:
+  push:
+    branches: 'main'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  # Download Images
+  download-img:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: technote-space/get-diff-action@v6
+        with:
+          PATTERNS: script/*.md
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: yarn install
+      - name: Run Download
+        env:
+          COMMIT_ID: ${{ github.sha }}
+        run: yarn download
